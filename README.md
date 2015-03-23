@@ -13,7 +13,7 @@ $ npm install tiny-json-validator
 
 It is supported in all versions of [iojs](https://iojs.org) +1.4 without any flags.
 
-# Usage
+# Example
 
 ```javascript
 let validator = require('tiny-json-validator');
@@ -29,7 +29,7 @@ let book_schema = {
         },
         author: {
             type: 'object',
-            required: true
+            required: true,
             properties: {
                 name: {
                     type: 'string',
@@ -38,7 +38,7 @@ let book_schema = {
                 age: {
                     type: 'integer',
                     required: true
-                }
+                },
                 city: {
                     type: 'string'
                 }
@@ -63,7 +63,7 @@ let data = {
     extra: 'this will get removed'
 };
 
-res = validator(book_schema, data);
+let res = validator(book_schema, data);
 res.isValid  // false
 res.errors  // {author.age: "is required", related_titles.0: 'type must be string', related_titles.1: 'type must be string'}
 data  // {title: 'A Game of Thrones', author: {name: 'George R. R. Marti'}, related_titles: [1, 2]}
