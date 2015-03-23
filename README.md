@@ -1,5 +1,8 @@
 # Tiny JSON validator
 
+[![Build Status](https://travis-ci.org/nitely/tiny-json-validator.svg?branch=master)](https://travis-ci.org/nitely/tiny-json-validator)
+[![npm](https://img.shields.io/npm/v/npm.svg)](https://github.com/nitely/tiny-json-validator/tree/master)
+
 A Node.js lib that has *less lines than this readme™*.
 
 It supports a tiny subset of the [json schema](http://json-schema.org/) specs. The main goal of this project is
