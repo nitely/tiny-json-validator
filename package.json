@@ -1,0 +1,27 @@
+{
+  "name": "tiny-json-validator",
+  "version": "1.0.0",
+  "description": "A simple and extensible json schema validator",
+  "main": "index.js",
+  "devDependencies": {
+    "jasmine": "^2.2"
+  },
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nitely/tiny-json-validator"
+  },
+  "keywords": [
+    "jsonschema",
+    "json",
+    "validator"
+  ],
+  "author": "Esteban Castro Borsani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nitely/tiny-json-validator/issues"
+  },
+  "homepage": "https://github.com/nitely/tiny-json-validator"
+}
