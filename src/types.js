@@ -53,6 +53,17 @@ types.object = function(value) {
     return typeof value === 'object' && value && !Array.isArray(value);
 };
 
+/**
+ * Checks the value is a boolean 
+ *
+ * @param {*} value
+ * @return {boolean}
+ * @api private
+ */
+types.boolean = function(value) {
+    return value === true || value === false 
+};
+
 
 /**
  * Expose types.
