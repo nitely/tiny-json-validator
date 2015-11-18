@@ -1,10 +1,10 @@
-"use strict"
+"use strict";
 
 /**
  * Formats object.
  */
-;
-var formats = {};
+let formats = {};
+
 
 formats['date-time'] = /^\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}[tT ]\d{2}:\d{2}:\d{2}(\.\d+)?([zZ]|[+-]\d{2}:\d{2})$/;
 formats['date'] = /^\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}$/;
@@ -20,6 +20,7 @@ formats['alphanumeric'] = /^[a-zA-Z0-9]+$/;
 formats['style'] = /\s*(.+?):\s*([^;]+);?/g;
 formats['phone'] = /^\+(?:[0-9] ?){6,14}[0-9]$/;
 formats['utc-millisec'] = /^[0-9]+(\.?[0-9]+)?$/;
+
 
 /**
  * Expose formats.
