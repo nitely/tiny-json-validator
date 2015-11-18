@@ -1,13 +1,15 @@
 "use strict";
 
-var types = require('./types');
-var formats = require('./formats');
+let types = require('./types');
+let formats = require('./formats');
+
 
 /**
  * Validate object.
  * Delegation pattern.
  */
-var proto = {};
+let proto = {};
+
 
 /**
  * Validate initializer.
@@ -32,6 +34,7 @@ proto.init = function init(node, data, name, path, errors) {
     this.value = data[name];
 };
 
+
 /**
  * Adds an error with its respective path.
  *
@@ -39,11 +42,12 @@ proto.init = function init(node, data, name, path, errors) {
  * @api private
  */
 proto.addError = function addError(error) {
-    var path = this.path.slice(1); // Copy slicing out dummy root node
+    let path = this.path.slice(1);  // Copy slicing out dummy root node
     path.push(this.name);
-    var pathStr = path.join('.');
+    let pathStr = path.join('.');
     this.errors[pathStr] = error;
 };
+
 
 /**
  * Checks the node is valid.
@@ -64,18 +68,19 @@ proto.isValid = function isValid() {
 
     // Type
     if (!this.isValidType()) {
-        this.addError('type must be ' + this.node.type);
+        this.addError(`type must be ${this.node.type}`);
         return false;
     }
 
     // Format
     if (!this.isValidFormat()) {
-        this.addError('format must be ' + this.node.format);
+        this.addError(`format must be ${this.node.format}`);
         return false;
     }
 
     return true;
 };
+
 
 /**
  * Returns false if the node does not exists and is required.
@@ -87,6 +92,7 @@ proto.isValidRequired = function isValidRequired() {
     return !(typeof this.value === 'undefined' && this.node.required);
 };
 
+
 /**
  * Checks if the node's value is the correct type.
  *
@@ -94,10 +100,11 @@ proto.isValidRequired = function isValidRequired() {
  * @api private
  */
 proto.isValidType = function isValidType() {
-    var typeFunc = types[this.node.type];
-    if (typeFunc == undefined) return false;
+    let typeFunc = types[this.node.type];
+    if( typeFunc == undefined ) return false;
     return typeFunc(this.value);
 };
+
 
 /**
  * Checks if the node's value is the correct format.
@@ -110,9 +117,10 @@ proto.isValidFormat = function isValidFormat() {
         return true;
     }
 
-    var formatRegex = formats[this.node.format];
+    let formatRegex = formats[this.node.format];
     return formatRegex.test(this.value);
 };
+
 
 /**
  * Creates the validate and runs it.
@@ -126,15 +134,17 @@ proto.isValidFormat = function isValidFormat() {
  * @api public
  */
 function validateFactory(node, data, name, path, errors) {
-    var validate = Object.create(proto);
+    let validate = Object.create(proto);
     validate.init(node, data, name, path, errors);
     return validate;
 }
+
 
 /**
  * Expose validate factory.
  */
 module.exports = validateFactory;
+
 
 /**
  * Expose validate.
