@@ -15,23 +15,33 @@ describe("Validator test suite", function() {
 
     // Types
     it("handles object type", function() {
-        expect(validator({type: 'object', properties: {}}, {}).isValid).toBe(true);
+        var res = validator({type: 'object', properties: {}}, {});
+        expect(res.isValid).toBe(true);
+        expect(res.data).toEqual({});
     });
 
     it("handles nested object type", function() {
-        expect(validator({type: 'object', properties: {foo: {type: 'object', properties: {}}}}, {}).isValid).toBe(true);
+        var res = validator({type: 'object', properties: {foo: {type: 'object', properties: {}}}}, {});
+        expect(res.isValid).toBe(true);
+        expect(res.data).toEqual({});
     });
 
     it("handles array type", function() {
-        expect(validator({type: 'array', items: {type: 'integer'}}, []).isValid).toBe(true);
+        var res = validator({type: 'array', items: {type: 'integer'}}, []);
+        expect(res.isValid).toBe(true);
+        expect(res.data).toEqual([]);
     });
 
     it("handles string type", function() {
-        expect(validator({type: 'string'}, 'foo').isValid).toBe(true);
+        var res = validator({type: 'string'}, 'foo');
+        expect(res.isValid).toBe(true);
+        expect(res.data).toEqual('foo');
     });
 
     it("handles integer type", function() {
-        expect(validator({type: 'integer'}, 1337).isValid).toBe(true);
+        var res = validator({type: 'integer'}, 1337);
+        expect(res.isValid).toBe(true);
+        expect(res.data).toEqual(1337);
     });
 
     it("throws on unknown type", function() {
@@ -43,35 +53,53 @@ describe("Validator test suite", function() {
         var schema = {type: 'object', properties: {foo: {type: 'string', required: true}}};
         expect(validator(schema, {foo: 'what?'}).isValid).toBe(true);
         expect(validator(schema, {}).errors).toEqual({foo: 'is required'});
+        expect(validator(schema, {}).data).toEqual({});
     });
 
     it("validates nested object is required", function() {
-        var schema = {type: 'object', properties: {foo: {type: 'object', properties: {bar: {type: 'string', required: true}}}}};
+        var schema = {type: 'object', properties: {
+            foo: {type: 'object', required: true, properties: {bar: {type: 'string', required: true}}}
+        }};
         expect(validator(schema, {foo: {bar: 'sup?'}}).isValid).toBe(true);
-        expect(validator(schema, {}).errors).toEqual({'foo.bar': 'is required'});
+        expect(validator(schema, {foo: {}}).errors).toEqual({'foo.bar': 'is required'});
+        expect(validator(schema, {foo: {}}).data).toEqual({foo: {}});
+    });
+
+    it("validates nested object is not required when " +
+        "parent is not required and parent was not submitted", function() {
+        var schema = {type: 'object', properties: {
+            foo: {type: 'object', properties: {bar: {type: 'string', required: true}}}
+        }};
+        expect(validator(schema, {foo: {bar: 'sup?'}}).isValid).toBe(true);
+        expect(validator(schema, {}).errors).toEqual({});
+        expect(validator(schema, {}).data).toEqual({});
     });
 
     it("validates array is required", function() {
         var schema = {type: 'array', required: true, items: {type: 'integer'}};
         expect(validator(schema, [1337]).isValid).toBe(true);
+        expect(validator(schema, [1337]).data).toEqual([1337]);
         expect(validator(schema, []).isValid).toBe(true);  // You are probably looking for minItems here, bad luck brian.
+        expect(validator(schema, []).data).toEqual([]);
     });
 
     it("validates string is required", function() {
         var schema = {type: 'string', required: true};
         expect(validator(schema, '1337').isValid).toBe(true);
-        expect(validator(schema).errors).toEqual({ root: 'is required' });
+        expect(validator(schema).errors).toEqual({root: 'is required'});
+        expect(validator(schema).data).toEqual(undefined);
     });
 
     it("validates integer is required", function() {
         var schema = {type: 'integer', required: true};
         expect(validator(schema, 1337).isValid).toBe(true);
-        expect(validator(schema).errors).toEqual({ root: 'is required' });
+        expect(validator(schema).errors).toEqual({root: 'is required'});
+        expect(validator(schema).data).toEqual(undefined);
     });
 
     // Validations: type
     it("validates object type", function() {
-        expect(validator({type: 'object', properties: {}}, []).errors).toEqual({ root: 'type must be object' });
+        expect(validator({type: 'object', properties: {}}, []).errors).toEqual({root: 'type must be object'});
     });
 
     it("validates nested object type", function() {
@@ -185,27 +213,38 @@ describe("Validator test suite", function() {
         expect(validator(schema, '???').errors).toEqual({ root: 'format must be utc-millisec' });
     });
 
-    // Filtering
-    it("removes extra properties", function() {
+    // Cleaned data
+    it("does not contain extra properties", function() {
         var schema = {type: 'object', properties: {foo: {type: 'string'}}};
         var data = {foo: '1337', bar: 123};
         expect(validator(schema, data).isValid).toBe(true);
-        expect(data).toEqual({foo: '1337'});
+        expect(validator(schema, data).data).toEqual({foo: '1337'});
+        expect(data).toEqual({foo: '1337', bar: 123});  // Should not mutate data
     });
 
-    it("removes nested extra properties", function() {
+    it("does not contain nested extra properties", function() {
         var schema = {type: 'object', properties: {foo: {type: 'object', properties: {bar: {type: 'string'}}}}};
         var data = {foo: {bar: '1337', foo2: 123}, bar2: 123};
         expect(validator(schema, data).isValid).toBe(true);
-        expect(data).toEqual({foo: {bar: '1337'}});
+        expect(validator(schema, data).data).toEqual({foo: {bar: '1337'}});
+        expect(data).toEqual({foo: {bar: '1337', foo2: 123}, bar2: 123});  // Should not mutate data
     });
 
-    it("removes extra properties from array items", function() {
+    it("does not contain extra properties from array items", function() {
         var schema = {type: 'array', items: {type: 'object', properties: {foo: {type: 'string'}}}};
         var data = [{foo: '1337', bar: 123}, {bar: 123}];
         expect(validator(schema, data).isValid).toBe(true);
-        expect(data).toEqual([{foo: '1337'}, {}]);
+        expect(validator(schema, data).data).toEqual([{foo: '1337'}, {}]);
+        expect(data).toEqual([{foo: '1337', bar: 123}, {bar: 123}]);  // Should not mutate data
     });
+
+    it("keeps valid array items from invalid array", function() {
+        var schema = {type: 'array', items: {type: 'string'}};
+        var data = ['1337', 1337, '1337', 700, 'foo'];
+        expect(validator(schema, data).isValid).toBe(false);
+        expect(validator(schema, data).data).toEqual(['1337', '1337', 'foo']);
+    });
+
 
 });
 

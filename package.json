@@ -2,7 +2,7 @@
   "name": "tiny-json-validator",
   "version": "1.0.0",
   "description": "A simple and extensible json schema validator",
-  "main": "index.js",
+  "main": "lib/validator.js",
   "devDependencies": {
     "jasmine": "^2.2"
   },

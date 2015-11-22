@@ -8,17 +8,21 @@ A Node.js lib that has *less lines than this readme™*.
 It supports a tiny subset of the [json schema](http://json-schema.org/) specs. The main goal of this project is
 to provide a nice and easy to follow implementation of a json validator. You may fork it and extend it as you please.
 
+Release versioning follows [SemVer](http://semver.org/).
+
 # Installation
 
 ```
 $ npm install tiny-json-validator
 ```
 
-It is supported in all versions of [iojs](https://iojs.org) +1.4 without any flags.
+It is supported in all versions of [Node.js(https://nodejs.org) +4.2 without any flags.
 
 # Example
 
 ```javascript
+"use strict";
+
 let validator = require('tiny-json-validator');
 
 
@@ -62,20 +66,26 @@ let data = {
     author: {
         name: 'George R. R. Marti'
     },
-    related_titles: [1, 2],
+    related_titles: [1, 2, 'A Song of Ice and Fire'],
     extra: 'this will get removed'
 };
 
 let res = validator(book_schema, data);
-res.isValid  // false
-res.errors  // {author.age: "is required", related_titles.0: 'type must be string', related_titles.1: 'type must be string'}
-data  // {title: 'A Game of Thrones', author: {name: 'George R. R. Marti'}, related_titles: [1, 2]}
+
+res.isValid
+// false
+
+res.errors
+// {author.age: "is required", related_titles.0: 'type must be string', related_titles.1: 'type must be string'}
+
+res.data
+// {title: 'A Game of Thrones', author: {name: 'George R. R. Marti'}, related_titles: ['A Song of Ice and Fire']}
 ```
 
 # Running tests
 
 ```
-$ jasmine
+$ npm run test
 ```
 
 ## License
