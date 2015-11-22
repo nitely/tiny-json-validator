@@ -16,7 +16,7 @@ Release versioning follows [SemVer](http://semver.org/).
 $ npm install tiny-json-validator
 ```
 
-It is supported in all versions of [Node.js(https://nodejs.org) +4.2 without any flags.
+It is supported in all versions of [Node.js](https://nodejs.org) +4.2 without any flags.
 
 # Example
 
@@ -87,6 +87,10 @@ res.data
 ```
 $ npm run test
 ```
+
+# Changelog
+
+[changelog](https://github.com/nitely/tiny-json-validator/blob/master/CHANGES.md)
 
 ## License
 
